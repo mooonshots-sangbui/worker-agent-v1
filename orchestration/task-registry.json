@@ -1,0 +1,5 @@
+{
+  "_readme": "Shared task registry. Each agent claims a task before working, releases when done. Read this before starting any task to avoid conflicts.",
+  "_instructions": "To claim: set status=in_progress, agent=your-name, started_at=now. To release: set status=done or status=blocked.",
+  "tasks": []
+}

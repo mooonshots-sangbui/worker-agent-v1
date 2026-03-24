@@ -1,0 +1,38 @@
+{
+  "_readme": "Edit project.config.md to set your package manager. Then update the commands below to match (replace 'bun' with npm/yarn/pnpm as needed).",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "description": "Auto-format after every file edit — change 'bun run format' to match your package manager",
+        "command": "bun run format"
+      },
+      {
+        "description": "Typecheck after every file edit — change 'bun run typecheck' to match your package manager",
+        "command": "bun run typecheck"
+      }
+    ]
+  },
+  "permissions": {
+    "allow": [
+      "bun run *",
+      "npm run *",
+      "yarn *",
+      "pnpm run *",
+      "npx *",
+      "git status",
+      "git diff",
+      "git log",
+      "git add",
+      "git commit",
+      "git push",
+      "docker logs *",
+      "tail -f *"
+    ],
+    "deny": [
+      "rm -rf /",
+      "git push --force",
+      "DROP TABLE",
+      "cat .env*"
+    ]
+  }
+}

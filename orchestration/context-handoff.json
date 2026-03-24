@@ -1,0 +1,5 @@
+{
+  "_readme": "Context handoff file. When an agent finishes, it writes its output here. The next agent reads this before starting to understand what was done.",
+  "last_updated": null,
+  "handoffs": []
+}
