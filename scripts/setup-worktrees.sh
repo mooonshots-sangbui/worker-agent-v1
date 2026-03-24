@@ -18,8 +18,11 @@ set -e
 
 REPO_NAME=$(basename "$(pwd)")
 PARENT_DIR=$(dirname "$(pwd)")
-SHELL_RC="$HOME/.zshrc"
-[ ! -f "$SHELL_RC" ] && SHELL_RC="$HOME/.bashrc"
+if [ -f "$HOME/.zshrc" ] && [ "$SHELL" = "/bin/zsh" ]; then
+  SHELL_RC="$HOME/.zshrc"
+else
+  SHELL_RC="$HOME/.bashrc"
+fi
 
 echo "🎭 Setting up 5 Claude Code worktrees for: $REPO_NAME"
 echo ""
@@ -80,6 +83,7 @@ for i in "${!AGENTS[@]}"; do
   AGENT="${AGENTS[$i]}"
   echo "alias $ALIAS='cd $WORKTREE_DIR && echo \"🎭 $AGENT\" && claude'" >> "$SHELL_RC"
 done
+echo "alias zp='cd $(pwd) && echo \"🎭 Project Manager\" && claude'" >> "$SHELL_RC"
 echo "" >> "$SHELL_RC"
 
 echo "✅ Shell aliases written to $SHELL_RC"

@@ -54,7 +54,7 @@ if not tasks:
 else:
     for t in tasks:
         icon = STATUS_ICONS.get(t['status'], '❓')
-        agent = t.get('agent', 'unassigned')
+        agent = t.get('agent') or 'unassigned'
         title = t.get('title', t['id'])
         branch = t.get('branch', '')
         print(f"  {icon} [{t['id']}] {title}")
@@ -79,8 +79,8 @@ if not handoffs:
     print('  No handoffs yet.')
 else:
     h = handoffs[0]
-    print(f"  {h['from_agent']} → {h['to_agent']}")
-    print(f"  Task: {h['task_id']}  |  {h['timestamp']}")
+    print(f"  {h.get('from_agent') or h.get('from', '?')} → {h.get('to_agent') or h.get('to', '?')}")
+    print(f"  Task: {h['task_id']}  |  {h.get('timestamp') or h.get('date', '')}")
     print(f"  Summary: {h['summary'][:80]}{'...' if len(h['summary']) > 80 else ''}")
     if h.get('files_changed'):
         print(f"  Files: {len(h['files_changed'])} changed")

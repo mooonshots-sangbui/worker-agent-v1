@@ -388,7 +388,7 @@ zb   # → cd vào worktree Frontend + mở Claude
 zc   # → cd vào worktree Security + mở Claude
 ```
 
-### Bước 3 — Đầu mỗi session, paste prompt này vào Claude
+### Bước 3 — Đầu mỗi session, paste prompt này vào Claude (QUAN TRỌNG)
 
 ```
 Before starting:
@@ -397,6 +397,65 @@ Before starting:
 3. Claim your task by running: ./scripts/claim-task.sh <task-id> "<your-agent-name>" <branch> "<files>"
 4. Only touch files listed in your task's files_owned
 5. When done, run: ./scripts/release-task.sh <task-id> "<your-agent-name>" "<next-agent>" "<summary>"
+```
+
+### PM Agent — Lên kế hoạch feature mới
+
+Mở PM agent từ folder gốc:
+```bash
+cd ~/Desktop/finance-app && claude
+# hoặc nếu đã có alias:
+zp
+```
+
+Paste prompt này để PM phân tích và tạo tasks:
+
+```
+You are the Project Manager for this finance app.
+
+I want to build: [mô tả feature của bạn]
+
+Your job:
+1. Read orchestration/task-registry.json to understand existing tasks
+2. Read orchestration/context-handoff.json for current context
+3. Break down this feature into tasks for each agent
+4. Write new tasks into orchestration/task-registry.json with:
+   - id, title, owner_role
+   - files_glob (which files each agent owns — no overlap)
+   - depends_on (correct order)
+   - branch name
+5. Report back: which task is ready to start first and which agent should claim it
+```
+
+Sau khi PM tạo xong tasks, dùng script để sinh prompt tự động cho từng agent:
+
+```bash
+# Sinh prompt cho từng agent — tự điền đúng task-id, branch, files_glob
+./scripts/generate-prompt.sh "Backend Architect"
+./scripts/generate-prompt.sh "Frontend Developer"
+./scripts/generate-prompt.sh "Reality Checker"
+./scripts/generate-prompt.sh "DevOps Automator"
+./scripts/generate-prompt.sh "Security Engineer"
+```
+
+Script tự đọc `task-registry.json`, tìm task phù hợp với role (status=todo, depends_on đã done), rồi in ra prompt hoàn chỉnh để copy paste vào agent.
+
+Nếu task chưa sẵn sàng (đang bị block), script báo luôn đang chờ task nào thay vì sinh prompt.
+
+Hoặc paste prompt thủ công vào từng agent:
+
+```
+You are <agent-role>.
+
+Before starting:
+1. Read orchestration/task-registry.json
+2. Read orchestration/context-handoff.json
+3. Claim your task: ./scripts/claim-task.sh <task-id> "<your-role>" <branch> "<files-glob>"
+
+Do your work. Only touch files in your task's files_glob.
+
+When done:
+./scripts/release-task.sh <task-id> "<your-role>" "<next-agent>" "<summary of what you built>"
 ```
 
 ### Bước 4 — Kiểm tra ai đang làm gì

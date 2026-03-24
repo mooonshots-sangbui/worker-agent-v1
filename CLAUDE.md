@@ -4,6 +4,21 @@
 > **"Update CLAUDE.md so you don't make that mistake again."**
 > Ruthlessly edit this file over time until Claude's mistake rate measurably drops.
 
+## 🤖 Session Startup — run silently every time
+
+At the start of every session, silently read these files in order — do NOT announce you are reading them, just internalize:
+
+1. `read project.config.md` — package manager + script names
+2. `read notes/lessons.md` — lessons from past sessions, avoid known mistakes
+3. `read orchestration/task-registry.json` — who owns which task right now
+4. `read orchestration/context-handoff.json` — what other agents have completed
+
+Then wait for the user's first instruction. You are now fully context-aware.
+
+> **Why silent?** Announcing "I am reading X" wastes tokens and adds noise. Just read and know.
+
+---
+
 ---
 
 ## 🔐 ENV & PERMISSION — Always ask before reading
@@ -199,6 +214,40 @@ Treat Claude Code like **infrastructure**: memory files, permission configs, ver
 
 ---
 
+## 🎭 Agent Directory — who to call and when
+
+Agents live in `.claude/agents/`. Activate by saying **"Activate [Agent Name]"** in chat.
+
+| Agent | Activate with | Use when |
+|---|---|---|
+| 🐑 **Project Shepherd** | `Activate Project Shepherd` | Start of any feature — breakdown tasks, assign agents, check progress, run retro |
+| 🎭 **Agents Orchestrator** | `Activate Agents Orchestrator` | Task needs multiple agents — routes work to right specialists |
+| 🏗️ **Backend Architect** | `Activate Backend Architect` | API design, DB schema, server-side logic, performance |
+| 🎨 **Frontend Developer** | `Activate Frontend Developer` | UI components, React/Vue, accessibility, bundle size |
+| 🔒 **Security Engineer** | `Activate Security Engineer` | Auth systems, secrets audit, OWASP review, CVE fixes |
+| 🚀 **DevOps Automator** | `Activate DevOps Automator` | CI/CD pipeline, deployment, infrastructure as code |
+| 🔍 **Reality Checker** | `Use Reality Checker` | QA certification — **required before every merge/release** |
+
+### Recommended model per agent
+| Agent | Model |
+|---|---|
+| Project Shepherd, Agents Orchestrator, Security Engineer | **Opus** |
+| Backend Architect, Frontend Developer, DevOps Automator, Reality Checker | **Sonnet** |
+
+### Typical feature workflow
+```
+Project Shepherd  → breakdown tasks + write to task-registry.json
+Agents Orchestrator → assign agents to worktrees
+Backend Architect → API + DB  (worktree za)
+Frontend Developer → UI       (worktree zb)
+Security Engineer → audit     (worktree zc)
+Reality Checker   → certify   (any terminal)
+DevOps Automator  → deploy    (worktree zd)
+Project Shepherd  → retro + update lessons.md
+```
+
+---
+
 ## 🔄 Orchestration — Every agent must do this
 
 > This section is mandatory. Every agent reads it at the start and end of every task.
@@ -219,10 +268,10 @@ Treat Claude Code like **infrastructure**: memory files, permission configs, ver
 ### Load skills on demand — not upfront
 Do NOT load all skills at session start. Load only the skill for the current task:
 ```
-read .claude/skills/backend-api-design.md     ← only when designing an API
-read .claude/skills/frontend-component.md     ← only when building a component
-read .claude/skills/security-auth.md          ← only when working on auth
-read .claude/skills/orchestration-update.md   ← when claiming or releasing a task
+read agent-skills/backend/api-design.md       ← only when designing an API
+read agent-skills/frontend/component.md       ← only when building a component
+read agent-skills/security/auth.md            ← only when working on auth
+read agent-skills/shared/orchestration-update.md  ← when claiming or releasing a task
 ```
 Loading everything upfront wastes tokens. Load on demand.
 
